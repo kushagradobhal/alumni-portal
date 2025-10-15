@@ -17,17 +17,15 @@ export const AuthProvider = ({ children }) => {
                 const decodedToken = jwtDecode(token);
                 setUser(decodedToken);
                 api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                
-                // Fetch user profile
+
+                // Fetch user profile asynchronously
                 fetchUserProfile();
             } catch (error) {
                 console.error("Invalid token", error);
                 localStorage.removeItem('token');
-                setLoading(false);
             }
-        } else {
-            setLoading(false);
         }
+        setLoading(false); // Set loading to false immediately to allow app to render
     }, []);
 
     const fetchUserProfile = async () => {

@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FaGraduationCap, 
-  FaBars, 
-  FaTimes, 
-  FaUser, 
-  FaCog, 
+import {
+  FaGraduationCap,
+  FaBars,
+  FaTimes,
+  FaUser,
+  FaCog,
   FaSignOutAlt,
   FaBell,
   FaHome,
-  FaDashboard,
+  FaTachometerAlt,
   FaComments,
   FaFileCsv,
   FaUserTie,
@@ -42,7 +42,7 @@ const Navbar = () => {
     if (isAdmin()) return <FaShieldAlt className="w-5 h-5" />;
     if (isStudent()) return <FaUserGraduate className="w-5 h-5" />;
     if (isAlumni()) return <FaUserTie className="w-5 h-5" />;
-    return <FaDashboard className="w-5 h-5" />;
+    return <FaTachometerAlt className="w-5 h-5" />;
   };
 
   const NavLink = ({ to, children, icon, onClick }) => {

@@ -57,7 +57,7 @@ const StudentDashboard = () => {
       setRequests(requestsRes.data);
       setConnections(connectionsRes.data);
       setUnreadCount(unreadRes.data.unreadCount);
-    } catch (error) {
+        } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
       toast.error('Failed to load dashboard data');
     } finally {
@@ -182,7 +182,7 @@ const StudentDashboard = () => {
             : 'bg-green-100 text-green-800'
         }`}>
           {alumni.profile_type === 'static' ? 'Static' : 'Verified'}
-        </span>
+                </span>
       </div>
 
       <div className="space-y-3 mb-4">
@@ -239,10 +239,10 @@ const StudentDashboard = () => {
                 <FaUserPlus className="w-3 h-3 mr-1" />
               )}
               {requests.some(r => r.alumni_id === alumni.id) ? 'Requested' : 'Connect'}
-            </button>
-          )}
+                    </button>
+                )}
+            </div>
         </div>
-      </div>
     </motion.div>
   );
 
@@ -254,14 +254,14 @@ const StudentDashboard = () => {
     );
   }
 
-  return (
+    return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-6">
             <div className="flex items-center justify-between">
-              <div>
+        <div>
                 <h1 className="text-3xl font-bold text-gray-900">Student Dashboard</h1>
                 <p className="text-gray-600">Welcome back, {user?.name}</p>
               </div>
@@ -403,7 +403,7 @@ const StudentDashboard = () => {
             {/* Alumni Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {alumni.map((alumni) => (
-                <AlumniCard key={alumni.id} alumni={alumni} />
+                    <AlumniCard key={alumni.id} alumni={alumni} />
               ))}
             </div>
 
@@ -579,9 +579,9 @@ const StudentDashboard = () => {
             </div>
           </motion.div>
         )}
-      </div>
-    </div>
-  );
+            </div>
+        </div>
+    );
 };
 
 export default StudentDashboard;
