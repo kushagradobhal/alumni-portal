@@ -4,7 +4,7 @@ A comprehensive, full-stack alumni management system built with React, Node.js, 
 
 ## 🚀 Features
 
-### Core Functionality
+###  Core Functionality
 - **Bulk CSV Upload**: Admin can upload verified alumni data in bulk
 - **Profile Management**: Static vs. claimed profiles with verification workflow
 - **Alumni Directory**: Searchable and filterable alumni database
