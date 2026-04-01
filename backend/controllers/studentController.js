@@ -73,6 +73,10 @@ export const sendInteractionRequest = async (req, res, next) => {
             return res.status(404).json({ message: 'Alumni profile not found.' });
         }
         
+        if (alumni.profile_type !== 'claimed') {
+            return res.status(403).json({ message: 'This alumni profile has not been claimed yet.' });
+        }
+
         if (!alumni.is_verified) {
             return res.status(403).json({ message: 'This alumni profile is not yet verified.' });
         }

@@ -281,16 +281,20 @@ const Login = () => {
 
       case 'claim-profile':
         return (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <div className="flex items-center mb-2">
-              <FaShieldAlt className="w-5 h-5 text-blue-600 mr-2" />
-              <span className="text-sm font-medium text-blue-800">Profile Claiming</span>
+          <>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+              <div className="flex items-center mb-2">
+                <FaShieldAlt className="w-5 h-5 text-blue-600 mr-2" />
+                <span className="text-sm font-medium text-blue-800">Profile Claiming</span>
+              </div>
+              <p className="text-sm text-blue-700">
+                Use the institutional email that already exists in the alumni CSV upload. After submitting,
+                set a new password to access your account once an admin verifies the claim.
+              </p>
             </div>
-            <p className="text-sm text-blue-700">
-              Use the email address that was registered in our alumni database. 
-              You must have received this email during your time at the institution.
-            </p>
-          </div>
+
+            {baseFields}
+          </>
         );
 
       default:

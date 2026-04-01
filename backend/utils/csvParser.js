@@ -7,7 +7,7 @@ export const parseCSV = (filePath) => {
         const results = [];
         const errors = [];
         let rowNumber = 0;
-        
+        console.log('--- RUNNING THE NEW CSV PARSER WITH "headers: true" ---');
         fs.createReadStream(filePath)
             .pipe(csv.parse({ 
                 headers: true, 

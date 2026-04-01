@@ -16,7 +16,7 @@ const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
 // CSV Upload and Alumni Management
-router.post('/upload-csv', protect, authorize('admin'), upload.single('alumniFile'), uploadAlumniCSV);
+router.post('/upload-csv', protect, authorize('admin'), upload.single('csvFile'), uploadAlumniCSV);
 router.get('/claims', protect, authorize('admin'), getPendingClaims);
 router.post('/claims/:alumniId', protect, authorize('admin'), approveOrRejectClaim);
 router.get('/stale-profiles', protect, authorize('admin'), getStaleProfiles);

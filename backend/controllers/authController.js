@@ -108,6 +108,15 @@ export const login = async (req, res, next) => {
             return res.status(401).json({ message: 'Invalid credentials.' });
         }
 
+        if (user.role === 'alumni') {
+            const alumniProfile = await AlumniProfile.findById(user.id);
+            if (alumniProfile && alumniProfile.profile_type === 'claimed' && !alumniProfile.is_verified) {
+                return res.status(403).json({ 
+                    message: 'Your alumni profile claim is pending admin verification. You will receive access once it is approved.' 
+                });
+            }
+        }
+
         const payload = {
             id: user.id,
             role: user.role,

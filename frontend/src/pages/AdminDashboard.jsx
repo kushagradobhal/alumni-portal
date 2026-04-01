@@ -73,7 +73,7 @@ const AdminDashboard = () => {
     setUploading(true);
     try {
       const formData = new FormData();
-      formData.append('alumniFile', csvFile);
+      formData.append('csvFile', csvFile);
 
       const response = await adminAPI.uploadCSV(formData);
       

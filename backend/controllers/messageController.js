@@ -1,5 +1,33 @@
 import { Message } from '../models/messageModel.js';
 import { InteractionRequest } from '../models/interactionModel.js';
+import { User } from '../models/userModel.js';
+
+const resolveParticipants = async (currentUser, rawOtherUserId) => {
+    const otherUserId = parseInt(rawOtherUserId);
+    if (isNaN(otherUserId)) {
+        return { error: { status: 400, message: 'Invalid user id supplied.' } };
+    }
+
+    const allowedRoles = ['student', 'alumni'];
+    if (!allowedRoles.includes(currentUser.role)) {
+        return { error: { status: 403, message: 'Only students and alumni can use messaging.' } };
+    }
+
+    const otherUser = await User.findById(otherUserId);
+    if (!otherUser || !allowedRoles.includes(otherUser.role)) {
+        return { error: { status: 404, message: 'The selected user cannot be messaged.' } };
+    }
+
+    if (currentUser.role === otherUser.role) {
+        return { error: { status: 403, message: 'Messaging is only supported between students and alumni.' } };
+    }
+
+    if (currentUser.role === 'student') {
+        return { participants: { studentId: currentUser.id, alumniId: otherUserId } };
+    }
+
+    return { participants: { studentId: otherUserId, alumniId: currentUser.id } };
+};
 
 // Get conversations for current user
 export const getConversations = async (req, res, next) => {
@@ -21,16 +49,24 @@ export const getConversation = async (req, res, next) => {
     const offset = (page - 1) * limit;
     
     try {
-        // Verify that they have an accepted connection
-        const connection = await InteractionRequest.checkExistingConnection(userId, parseInt(otherUserId));
+        const { participants, error } = await resolveParticipants(req.user, otherUserId);
+        if (error) {
+            return res.status(error.status).json({ message: error.message });
+        }
+
+        const connection = await InteractionRequest.checkExistingConnection(
+            participants.studentId,
+            participants.alumniId
+        );
         if (!connection || connection.status !== 'accepted') {
             return res.status(403).json({ message: 'You are not connected with this user.' });
         }
         
-        const messages = await Message.getConversation(userId, parseInt(otherUserId), parseInt(limit), parseInt(offset));
+        const otherId = parseInt(otherUserId);
+        const messages = await Message.getConversation(userId, otherId, parseInt(limit), parseInt(offset));
         
         // Mark messages as read
-        await Message.markConversationAsRead(userId, parseInt(otherUserId));
+        await Message.markConversationAsRead(userId, otherId);
         
         res.json(messages);
     } catch (error) {
@@ -44,15 +80,22 @@ export const sendMessage = async (req, res, next) => {
     const { receiverId, message } = req.body;
     
     try {
-        // Verify that they have an accepted connection
-        const connection = await InteractionRequest.checkExistingConnection(userId, parseInt(receiverId));
+        const { participants, error } = await resolveParticipants(req.user, receiverId);
+        if (error) {
+            return res.status(error.status).json({ message: error.message });
+        }
+
+        const connection = await InteractionRequest.checkExistingConnection(
+            participants.studentId,
+            participants.alumniId
+        );
         if (!connection || connection.status !== 'accepted') {
             return res.status(403).json({ message: 'You are not connected with this user.' });
         }
         
         const newMessage = await Message.create({
             sender_id: userId,
-            receiver_id: receiverId,
+            receiver_id: parseInt(receiverId),
             message
         });
         

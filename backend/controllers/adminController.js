@@ -14,13 +14,13 @@ export const uploadAlumniCSV = async (req, res, next) => {
 
     try {
         const parseResult = await parseCSV(filePath);
-        
+
         if (parseResult.totalRows === 0) {
             return res.status(400).json({ message: "CSV is empty or invalid." });
         }
 
         if (parseResult.validRows === 0) {
-            return res.status(400).json({ 
+            return res.status(400).json({
                 message: "No valid records found in CSV.",
                 errors: parseResult.errors
             });
@@ -32,19 +32,19 @@ export const uploadAlumniCSV = async (req, res, next) => {
         let duplicateRecordsCount = 0;
 
         for (const record of alumniData) {
-            // Check if alumni profile already exists
+
             const existingProfile = await AlumniProfile.findByEmail(record.email);
-            
+
             if (!existingProfile) {
-                // Create new user account
+
                 const user = await User.create({
                     name: record.name,
                     email: record.email,
                     password: 'STATIC_ACCOUNT_NO_LOGIN',
                     role: 'alumni'
                 });
-                
-                // Create static alumni profile
+
+
                 await AlumniProfile.create({
                     id: user.id,
                     course: record.course,
@@ -87,7 +87,7 @@ export const uploadAlumniCSV = async (req, res, next) => {
             records_count: newRecordsCount + updatedRecordsCount
         });
 
-        res.status(201).json({ 
+        res.status(201).json({
             message: `CSV upload completed successfully.`,
             summary: {
                 totalRows: parseResult.totalRows,
@@ -155,7 +155,7 @@ export const getUploadHistory = async (req, res, next) => {
     try {
         const { page = 1, limit = 10 } = req.query;
         const offset = (page - 1) * limit;
-        
+
         const uploads = await CSVUpload.getByAdminId(req.user.id, parseInt(limit), parseInt(offset));
         res.json(uploads);
     } catch (error) {
@@ -168,18 +168,18 @@ export const getAllUsers = async (req, res, next) => {
     try {
         const { role, page = 1, limit = 20 } = req.query;
         const offset = (page - 1) * limit;
-        
+
         let query = 'SELECT * FROM users';
         const values = [];
-        
+
         if (role) {
             query += ' WHERE role = $1';
             values.push(role);
         }
-        
+
         query += ' ORDER BY created_at DESC LIMIT $' + (values.length + 1) + ' OFFSET $' + (values.length + 2);
         values.push(parseInt(limit), parseInt(offset));
-        
+
         // For now, using direct query. Could be moved to User model
         const { default: pool } = await import('../config/db.js');
         const result = await pool.query(query, values);
